@@ -1,0 +1,110 @@
+{
+	"pages": [{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "愿望"
+			}
+		},
+		{
+			"path": "pages/createPlan/createPlan",
+			"style": {
+				"navigationBarTitleText": "我的生活锚点"
+			}
+		},
+		{
+			"path": "pages/anotherPage/anotherPage",
+			"style": {
+				"navigationBarTitleText": "我的页面"
+			}
+		},
+		{
+			"path": "pages/exploringBehavior/exploringBehavior",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path" : "pages/anchor-behaviors/anchor-behaviors",
+			"style" : 
+			{
+				"navigationBarTitleText" : "锚点行为列表"
+			}
+		},
+		{
+			"path" : "pages/anchorList/anchorList",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/anchor-behaviorsList/anchor-behaviorsList",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/book/book",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/about/about",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/dreamList/dreamList",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+
+	// "easycom": {
+	// 	"autoscan": true,
+	// 	"custom": {
+	// 		"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-\$1/uni-\$1.vue"
+	// 	}
+	// },
+
+
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#3CC51F",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "愿望",
+				"iconPath": "static/标签 (1).png",
+				"selectedIconPath": "static/标签.png"
+			},
+			{
+				"pagePath": "pages/createPlan/createPlan",
+				"text": "锚点",
+				"iconPath": "static/挂号 (1).png",
+				"selectedIconPath": "static/挂号.png"
+			},
+			{
+				"pagePath": "pages/anotherPage/anotherPage",
+				"text": "我的",
+				"iconPath": "static/我的 (1).png",
+				"selectedIconPath": "static/我的.png"
+			}
+		]
+	}
+}

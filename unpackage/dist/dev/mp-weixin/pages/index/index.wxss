@@ -1,0 +1,203 @@
+
+.container.data-v-1cf27b2a {
+  display: flex;
+  flex-direction: column;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Content Wrapper */
+.content-wrapper.data-v-1cf27b2a {
+  flex: 1; /* Allow content to take up available space */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+/* 彩虹屁 */
+.cheer-section.data-v-1cf27b2a {
+  padding: 24rpx 0;
+  display: flex;
+  justify-content: center;
+}
+.cheer-text.data-v-1cf27b2a {
+  font-size: 36rpx;
+  color: #ff6b6b;
+  font-weight: bold;
+  text-align: center;
+}
+.no-plans-message.data-v-1cf27b2a {
+  text-align: center;
+  font-size: 28rpx;
+  color: #999;
+  margin: 20rpx 0;
+}
+
+/* 分割线 */
+.divider.data-v-1cf27b2a {
+  border-bottom: 1rpx solid #e0e0e0;
+  margin-bottom: 24rpx;
+}
+
+/* 计划列表 */
+.plan-list.data-v-1cf27b2a {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24rpx;
+}
+.completed-plans.data-v-1cf27b2a {
+  margin-top: 24rpx;
+  margin-bottom: 80rpx;
+}
+.plan-item.data-v-1cf27b2a {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s;
+}
+.plan-item.completed.data-v-1cf27b2a {
+  background-color: #f0f0f0;
+  color: #a0a0a0;
+}
+
+/* 勾选框 */
+.checkbox.data-v-1cf27b2a {
+  margin-right: 16rpx;
+  font-size: 28rpx;
+  cursor: pointer;
+}
+.checkbox-icon.data-v-1cf27b2a {
+  font-size: 32rpx;
+}
+
+/* 计划内容 */
+.plan-content.data-v-1cf27b2a {
+  flex: 1;
+  max-width: 90%;
+  position: relative;
+}
+.plan-status-wrapper.data-v-1cf27b2a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4rpx 12rpx;
+}
+.plan-name.data-v-1cf27b2a {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+  word-wrap: break-word;
+  white-space: normal;
+  max-width: 70%;
+}
+.plan-status-wrapper.data-v-1cf27b2a {
+  display: flex;
+  justify-content: flex-end;
+}
+.plan-status.data-v-1cf27b2a {
+  padding: 4rpx 12rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  color: #fff;
+}
+.status-active.data-v-1cf27b2a {
+  background-color: #ff9800;
+}
+.status-completed.data-v-1cf27b2a {
+  background-color: #4caf50;
+}
+.status-pending.data-v-1cf27b2a {
+  background-color: #9e9e9e;
+}
+
+/* 每个计划间的分割线 */
+.item-divider.data-v-1cf27b2a {
+  height: 16rpx;
+}
+
+/* 添加新计划区域，固定在底部 */
+.add-section.data-v-1cf27b2a {
+  position: fixed;
+  bottom: 16rpx;
+  left: 16rpx;
+  right: 16rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #ff5722, #ff9800);
+  border-radius: 44rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.add-section.expanded.data-v-1cf27b2a {
+  background: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+.add-text.data-v-1cf27b2a {
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.add-input.data-v-1cf27b2a {
+  flex: 1;
+  height: 100%;
+  padding: 0 32rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: transparent;
+}
+
+/* 添加动画效果 */
+.add-section.data-v-1cf27b2a {
+  transform-origin: center bottom;
+  animation: bounce-in-1cf27b2a 0.3s ease-out;
+}
+.add-section.expanded.data-v-1cf27b2a {
+  animation: expand-1cf27b2a 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 弹窗的出现动画 */
+@keyframes fadeIn-1cf27b2a {
+0% {
+    opacity: 0;
+}
+100% {
+    opacity: 1;
+}
+}
+@keyframes popupAnimation-1cf27b2a {
+0% {
+    transform: scale(0.8);
+}
+100% {
+    transform: scale(1);
+}
+}
+@keyframes bounce-in-1cf27b2a {
+0% {
+    transform: translateY(100%);
+}
+70% {
+    transform: translateY(-10rpx);
+}
+100% {
+    transform: translateY(0);
+}
+}
+@keyframes expand-1cf27b2a {
+0% {
+    transform: scaleY(0.8);
+}
+100% {
+    transform: scaleY(1);
+}
+}

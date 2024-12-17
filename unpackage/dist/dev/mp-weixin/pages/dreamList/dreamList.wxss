@@ -1,0 +1,29 @@
+
+.container {
+  padding: 20px;
+}
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+.tag-list {
+  padding: 10px;
+}
+.tag {
+  background-color: #f0f0f0;
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-block; /* 使标签可以水平排列 */
+}
+.tag:active {
+  background-color: #e0e0e0;
+}

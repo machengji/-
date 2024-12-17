@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "edit-action-modal": "../../components/EditActionModal",
+    "success-popup": "../../components/SuccessPopup",
+    "goal-modal": "../../components/GoalModal"
+  }
+}

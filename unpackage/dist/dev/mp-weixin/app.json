@@ -1,0 +1,47 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/createPlan/createPlan",
+    "pages/anotherPage/anotherPage",
+    "pages/exploringBehavior/exploringBehavior",
+    "pages/anchor-behaviors/anchor-behaviors",
+    "pages/anchorList/anchorList",
+    "pages/anchor-behaviorsList/anchor-behaviorsList",
+    "pages/book/book",
+    "pages/about/about",
+    "pages/dreamList/dreamList"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3CC51F",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "愿望",
+        "iconPath": "static/标签 (1).png",
+        "selectedIconPath": "static/标签.png"
+      },
+      {
+        "pagePath": "pages/createPlan/createPlan",
+        "text": "锚点",
+        "iconPath": "static/挂号 (1).png",
+        "selectedIconPath": "static/挂号.png"
+      },
+      {
+        "pagePath": "pages/anotherPage/anotherPage",
+        "text": "我的",
+        "iconPath": "static/我的 (1).png",
+        "selectedIconPath": "static/我的.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

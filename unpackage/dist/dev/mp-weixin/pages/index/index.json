@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "愿望",
+  "usingComponents": {
+    "success-popup": "../../components/SuccessPopup"
+  }
+}
