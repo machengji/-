@@ -32,8 +32,11 @@
       </view>
     </view>
 
-    <!-- 分享按钮 -->
+    <!-- 仅在微信小程序上显示的分享按钮 -->
+   <!--  #ifdef  H5 || MP-WEIXIN-->
     <button class="share-btn" open-type="share">分享给朋友</button>
+  	<!--  #endif -->
+    
   </view>
 </template>
 
@@ -97,7 +100,7 @@ export default {
 <style>
 .container {
   padding: 0 30rpx;
-  background-color: #f8f8f8;
+ /* background-color: #f8f8f8; */
 }
 
 .user-info-card {

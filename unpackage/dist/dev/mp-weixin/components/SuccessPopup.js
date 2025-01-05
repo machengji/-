@@ -120,7 +120,7 @@ const _sfc_main = {
           this.rainbowFart = "你太棒了！";
         }
       } catch (error) {
-        console.error("Failed to fetch rainbow fart:", error);
+        common_vendor.index.__f__("error", "at components/SuccessPopup.vue:144", "Failed to fetch rainbow fart:", error);
         this.rainbowFart = "你太棒了！";
       }
     }
@@ -155,3 +155,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b17bdff1"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../.sourcemap/mp-weixin/components/SuccessPopup.js.map

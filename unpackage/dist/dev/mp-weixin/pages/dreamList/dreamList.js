@@ -283,7 +283,7 @@ const _sfc_main = {
       try {
         common_vendor.index.setStorageSync("plans", JSON.stringify(this.plans));
       } catch (e) {
-        console.error("保存计划数据失败", e);
+        common_vendor.index.__f__("error", "at pages/dreamList/dreamList.vue:106", "保存计划数据失败", e);
       }
     },
     loadPlansFromStorage() {
@@ -293,7 +293,7 @@ const _sfc_main = {
           this.plans = JSON.parse(savedPlans);
         }
       } catch (e) {
-        console.error("加载计划数据失败", e);
+        common_vendor.index.__f__("error", "at pages/dreamList/dreamList.vue:116", "加载计划数据失败", e);
       }
     }
   },
@@ -318,3 +318,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/dreamList/dreamList.js.map

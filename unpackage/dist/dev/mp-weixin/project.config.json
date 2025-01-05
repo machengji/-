@@ -18,9 +18,9 @@
     }
   },
   "compileType": "miniprogram",
-  "libVersion": "3.6.5",
+  "libVersion": "3.7.3",
   "appid": "wx143a38ebfeaba324",
-  "projectname": "清单",
+  "projectname": "美好微行动",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",

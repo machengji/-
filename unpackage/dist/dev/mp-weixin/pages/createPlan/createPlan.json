@@ -1,4 +1,8 @@
 {
   "navigationBarTitleText": "我的生活锚点",
-  "usingComponents": {}
+  "usingComponents": {
+    "up-swipe-action-item": "../../uni_modules/uview-plus/components/u-swipe-action-item/u-swipe-action-item",
+    "up-swipe-action": "../../uni_modules/uview-plus/components/u-swipe-action/u-swipe-action",
+    "up-popup": "../../uni_modules/uview-plus/components/u-popup/u-popup"
+  }
 }

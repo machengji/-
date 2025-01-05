@@ -38,12 +38,12 @@ const _sfc_main = {
   onLoad(options) {
     if (options.anchor) {
       this.anchorInfo = JSON.parse(options.anchor);
-      console.log(this.anchorInfo);
+      common_vendor.index.__f__("log", "at pages/anchor-behaviorsList/anchor-behaviorsList.vue:92", this.anchorInfo);
       this.getBehaviorList();
     }
     if (options.tempBehavior) {
       this.tempBehavior = deepClone(JSON.parse(options.tempBehavior));
-      console.log("11", this.tempBehavior);
+      common_vendor.index.__f__("log", "at pages/anchor-behaviorsList/anchor-behaviorsList.vue:98", "11", this.tempBehavior);
     }
   },
   onUnload() {
@@ -178,7 +178,7 @@ const _sfc_main = {
         }
       } catch (error) {
         common_vendor.index.hideLoading();
-        console.error("上传失败", error);
+        common_vendor.index.__f__("error", "at pages/anchor-behaviorsList/anchor-behaviorsList.vue:265", "上传失败", error);
       }
     },
     // Helper function to get the time for a given anchor name
@@ -303,3 +303,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-bda5aa8d"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/anchor-behaviorsList/anchor-behaviorsList.js.map

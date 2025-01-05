@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const utils_api = require("../../utils/api.js");
 const _sfc_main = {
   data() {
     return {
@@ -18,15 +19,40 @@ const _sfc_main = {
         // 初始值设为 null
       },
       anchorList: [],
-      tempBehavior: {}
+      tempBehavior: {},
       // 接收传递过来的行为列表
+      email: ""
+      // 添加 email 属性
     };
   },
-  onLoad(options) {
-    this.loadAnchorList();
+  async onLoad(options) {
+    this.email = common_vendor.index.getStorageSync("userEmail") || "";
+    if (this.email) {
+      try {
+        const response = await utils_api.getAnchorList(this.email);
+        common_vendor.index.__f__("log", "at pages/anchorList/anchorList.vue:91", "获取到的锚点列表:", response.data);
+        if (response.data) {
+          this.anchorList = response.data.map((behavior) => ({
+            name: behavior.name,
+            hour: behavior.time ? behavior.time.split(":")[0] : null,
+            minute: behavior.time ? behavior.time.split(":")[1] : null
+          }));
+          common_vendor.index.__f__("log", "at pages/anchorList/anchorList.vue:99", "保存到本地的锚3------点列表:", this.anchorList);
+        }
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/anchorList/anchorList.vue:104", "获取行为数据失败:", error);
+        common_vendor.index.showToast({
+          title: "获取数据失败",
+          icon: "none"
+        });
+        this.loadAnchorList();
+      }
+    } else {
+      this.loadAnchorList();
+    }
     if (options.anchor) {
       this.tempBehavior = JSON.parse(options.anchor);
-      console.log("接收到的行为列表:", this.tempBehavior);
+      common_vendor.index.__f__("log", "at pages/anchorList/anchorList.vue:120", "接收到的行为列表:", this.tempBehavior);
     }
   },
   methods: {
@@ -91,8 +117,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: common_vendor.f($data.anchorList, (item, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(item.name),
-        b: item.hour !== null && item.minute !== null
-      }, item.hour !== null && item.minute !== null ? {
+        b: item.hour !== null && item.minute !== null && item.hour !== void 0 && item.minute !== void 0
+      }, item.hour !== null && item.minute !== null && item.hour !== void 0 && item.minute !== void 0 ? {
         c: common_vendor.t($options.padZero(item.hour)),
         d: common_vendor.t($options.padZero(item.minute))
       } : {}, {
@@ -123,3 +149,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-5d331a9c"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/anchorList/anchorList.js.map

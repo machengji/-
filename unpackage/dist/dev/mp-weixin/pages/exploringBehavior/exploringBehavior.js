@@ -35,29 +35,33 @@ const _sfc_main = {
       loading: false,
       showPopup: false,
       showEditModal: false,
-      // 控制模态框显示
       currentAction: {},
       description: "",
-      // 当前编辑的 action
       currentEditIndex: -1,
-      // 当前编辑的 action 的索引
       showGoalModalone: false,
-      // 控制目标编辑模态框显示
-      isFetching: false
-      // 添加一个标志位，表示是否正在请求
+      isFetching: false,
+      email: ""
+      // 用户邮箱
     };
   },
   onLoad(options) {
     if (options.plan) {
-      this.plan = JSON.parse(options.plan);
-      if (this.plan.isExplored) {
+      try {
+        const parsedPlan = JSON.parse(options.plan);
+        this.plan = deepClone(parsedPlan);
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:173", "plan56565", this.plan);
         this.loadBehaviorsFromStorage();
-        return;
+        if (this.plan.isExplored) {
+          return;
+        }
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/exploringBehavior/exploringBehavior.vue:181", "解析 plan 数据失败:", error);
       }
     }
   },
   mounted() {
-    console.log(this.plan.isExplored);
+    this.email = common_vendor.index.getStorageSync("userEmail") || "";
+    common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:190", this.plan.isExplored);
     if (!this.plan.isExplored) {
       this.fetchPlanData();
     }
@@ -77,9 +81,8 @@ const _sfc_main = {
       try {
         const response = await utils_api.getPlan({
           message: message || this.plan.name
-          // 如果没有传递 message，则使用 plan.name
         });
-        console.log(response);
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:211", response);
         if (response.response && Array.isArray(response.response)) {
           this.aiTags = response.response.map((item) => item.text);
           if (!message) {
@@ -95,7 +98,7 @@ const _sfc_main = {
           });
         }
       } catch (error) {
-        console.error("获取计划数据失败:", error);
+        common_vendor.index.__f__("error", "at pages/exploringBehavior/exploringBehavior.vue:227", "获取计划数据失败:", error);
         common_vendor.index.showToast({
           title: "获取计划数据失败",
           icon: "none",
@@ -154,12 +157,11 @@ const _sfc_main = {
       }
       this.closeEditModal();
     },
-    // 跳转到某个行为
     scrollToBehavior(action) {
       const targetId = `behavior-chosen-${this.chosenBehaviors.indexOf(action)}`;
       this.currentScrollId = targetId;
       const clonedAction = deepClone(action);
-      console.log(clonedAction);
+      common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:298", clonedAction);
       common_vendor.index.navigateTo({
         url: `/pages/anchorList/anchorList?anchor=${JSON.stringify(clonedAction)}`
       });
@@ -174,6 +176,7 @@ const _sfc_main = {
       this.updatePlanInStorage();
     },
     addAction() {
+      common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:315", "newAction", this.newAction);
       if (this.newAction.trim() === "") {
         return;
       }
@@ -182,11 +185,6 @@ const _sfc_main = {
         completed: false
       });
       this.currentScrollId = `behavior-chosen-0`;
-      common_vendor.index.showToast({
-        title: "已添加行为：" + this.newAction,
-        icon: "none",
-        duration: 2e3
-      });
       this.newAction = "";
       this.showInput = false;
       this.updatePlanInStorage();
@@ -253,6 +251,7 @@ const _sfc_main = {
       if (plans) {
         plans = JSON.parse(plans);
         const currentPlan = plans.find((p) => p.id === this.plan.id);
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:400", "kkkkplan", currentPlan);
         if (currentPlan && currentPlan.chosenBehaviors) {
           this.chosenBehaviors = currentPlan.chosenBehaviors;
         }
@@ -261,7 +260,7 @@ const _sfc_main = {
         }
       }
     },
-    updatePlanInStorage() {
+    async updatePlanInStorage() {
       let plans = common_vendor.index.getStorageSync("plans");
       if (plans) {
         plans = JSON.parse(plans);
@@ -275,22 +274,32 @@ const _sfc_main = {
           common_vendor.index.setStorageSync("plans", JSON.stringify(plans));
         }
       }
+      if (this.email) {
+        let storedPlans = common_vendor.index.getStorageSync("plans");
+        let plansToSave = [];
+        if (storedPlans) {
+          plansToSave = JSON.parse(storedPlans);
+        } else {
+          plansToSave = this.plans;
+        }
+        await utils_api.saveUserPlan(this.email, plansToSave);
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:433", "计划数据保存到后端成功");
+      }
     },
-    // 显示目标编辑模态框
     showGoalModal() {
       this.showGoalModal = true;
     },
-    // 关闭目标编辑模态框
     closeGoalModal() {
       this.showGoalModalone = false;
     },
-    // 处理目标编辑模态框的确认
     handleGoalConfirm(updatedPlan) {
-      this.plan = { ...this.plan, ...updatedPlan };
+      this.plan = {
+        ...this.plan,
+        ...updatedPlan
+      };
       this.updatePlanInStorage();
       this.closeGoalModal();
     },
-    // 处理目标删除
     handleGoalDelete() {
       let plans = common_vendor.index.getStorageSync("plans");
       if (plans) {
@@ -302,26 +311,59 @@ const _sfc_main = {
           common_vendor.index.navigateBack();
         }
       }
+    },
+    handleSwipeOptionClick(action, idx, event) {
+      common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:463", "Swipe action button clicked for action:", action);
+      if (event.index === 0) {
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:466", "细化探索按钮被点击, ID:", action.id);
+        this.continueExplore(action);
+      } else if (event.index === 1) {
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:470", "去绑定锚点按钮被点击, ID:", action.id);
+        this.scrollToBehavior(action);
+      } else if (event.index === 2) {
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:474", "编辑按钮被点击, ID:", action.id);
+        this.editAction(action, idx);
+      } else if (event.index === 3) {
+        common_vendor.index.__f__("log", "at pages/exploringBehavior/exploringBehavior.vue:478", "删除按钮被点击, ID:", action.id);
+        this.deleteAction(idx);
+      }
     }
   }
 };
 if (!Array) {
+  const _easycom_up_icon2 = common_vendor.resolveComponent("up-icon");
+  const _easycom_up_swipe_action_item2 = common_vendor.resolveComponent("up-swipe-action-item");
+  const _easycom_up_swipe_action2 = common_vendor.resolveComponent("up-swipe-action");
   const _component_edit_action_modal = common_vendor.resolveComponent("edit-action-modal");
   const _component_success_popup = common_vendor.resolveComponent("success-popup");
   const _component_GoalModal = common_vendor.resolveComponent("GoalModal");
-  (_component_edit_action_modal + _component_success_popup + _component_GoalModal)();
+  (_easycom_up_icon2 + _easycom_up_swipe_action_item2 + _easycom_up_swipe_action2 + _component_edit_action_modal + _component_success_popup + _component_GoalModal)();
+}
+const _easycom_up_icon = () => "../../uni_modules/uview-plus/components/u-icon/u-icon.js";
+const _easycom_up_swipe_action_item = () => "../../uni_modules/uview-plus/components/u-swipe-action-item/u-swipe-action-item.js";
+const _easycom_up_swipe_action = () => "../../uni_modules/uview-plus/components/u-swipe-action/u-swipe-action.js";
+if (!Math) {
+  (_easycom_up_icon + _easycom_up_swipe_action_item + _easycom_up_swipe_action)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.t($data.plan.name),
     b: common_vendor.o((...args) => $options.goshowGoalModal && $options.goshowGoalModal(...args)),
-    c: common_vendor.o((...args) => $options.clearAiTags && $options.clearAiTags(...args)),
-    d: common_vendor.o((...args) => $options.reExplore && $options.reExplore(...args)),
-    e: $data.loading
+    c: common_vendor.p({
+      name: "reload",
+      color: "#ffffff"
+    }),
+    d: common_vendor.o((...args) => $options.clearAiTags && $options.clearAiTags(...args)),
+    e: common_vendor.p({
+      name: "search",
+      color: "#ffffff"
+    }),
+    f: common_vendor.o((...args) => $options.reExplore && $options.reExplore(...args)),
+    g: $data.loading
   }, $data.loading ? {
-    f: common_assets._imports_0$1
+    h: common_assets._imports_0$1
   } : {
-    g: common_vendor.f($data.aiTags, (item, index, i0) => {
+    i: common_vendor.f($data.aiTags, (item, index, i0) => {
       return {
         a: common_vendor.t(item),
         b: "aiTag-" + index,
@@ -330,29 +372,81 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     })
   }, {
-    h: common_vendor.o(($event) => $data.showInput = true),
-    i: $data.showInput
-  }, $data.showInput ? {
-    j: $data.newAction,
-    k: common_vendor.o(($event) => $data.newAction = $event.detail.value),
-    l: common_vendor.o((...args) => $options.addAction && $options.addAction(...args)),
-    m: common_vendor.o(($event) => $data.showInput = false)
-  } : {}, {
-    n: common_vendor.f($data.chosenBehaviors, (action, idx, i0) => {
+    j: !$data.showInput
+  }, !$data.showInput ? {
+    k: common_vendor.p({
+      name: "plus",
+      color: "#ffffff"
+    }),
+    l: common_vendor.o(($event) => $data.showInput = true)
+  } : {
+    m: common_vendor.o((...args) => $options.addAction && $options.addAction(...args)),
+    n: common_vendor.o(($event) => $data.showInput = false),
+    o: $data.newAction,
+    p: common_vendor.o(($event) => $data.newAction = $event.detail.value)
+  }, {
+    q: common_vendor.f($data.chosenBehaviors, (action, idx, i0) => {
       return {
         a: common_vendor.t(action.completed ? "✔️" : "⬜️"),
         b: common_vendor.o(($event) => $options.toggleCompletion(idx, "chosen"), "chosen-" + idx),
         c: common_vendor.t(idx + 1),
         d: common_vendor.t(action.title),
-        e: common_vendor.o(($event) => $options.continueExplore(action), "chosen-" + idx),
-        f: common_vendor.o(($event) => $options.scrollToBehavior(action), "chosen-" + idx),
-        g: common_vendor.o(($event) => $options.editAction(action, idx), "chosen-" + idx),
-        h: common_vendor.o(($event) => $options.deleteAction(idx), "chosen-" + idx),
-        i: "chosen-" + idx,
-        j: "behavior-chosen-" + idx
+        e: common_vendor.o(($event) => $options.handleSwipeOptionClick(action, idx, $event), "chosen-" + idx),
+        f: "82a82ead-4-" + i0 + "," + ("82a82ead-3-" + i0),
+        g: "82a82ead-3-" + i0,
+        h: "chosen-" + idx,
+        i: "behavior-chosen-" + idx
       };
     }),
-    o: common_vendor.f($data.completedBehaviors, (action, idx, i0) => {
+    r: common_vendor.p({
+      options: [
+        {
+          icon: "search",
+          style: {
+            background: "linear-gradient(135deg, #e64a19, #ff9800)",
+            width: "70rpx",
+            height: "70rpx",
+            borderRadius: "35rpx",
+            marginRight: "10rpx"
+          }
+        },
+        // 细化探索
+        {
+          icon: "plus",
+          style: {
+            background: "linear-gradient(135deg, #ff3d00, #ffb300)",
+            width: "70rpx",
+            height: "70rpx",
+            borderRadius: "35rpx",
+            marginRight: "10rpx"
+          }
+        },
+        // 去绑定锚点
+        {
+          icon: "edit-pen-fill",
+          style: {
+            background: "linear-gradient(135deg, #ff8e22, #ffcc00)",
+            width: "70rpx",
+            height: "70rpx",
+            borderRadius: "35rpx",
+            marginRight: "10rpx"
+          }
+        },
+        // 编辑
+        {
+          icon: "trash",
+          style: {
+            background: "linear-gradient(135deg, #ff3d00, #ff0000)",
+            width: "70rpx",
+            height: "70rpx",
+            borderRadius: "35rpx"
+          }
+        }
+        // 删除
+      ],
+      threshold: 80
+    }),
+    s: common_vendor.f($data.completedBehaviors, (action, idx, i0) => {
       return common_vendor.e({
         a: common_vendor.t(action.completed ? "✔️" : "⬜️"),
         b: common_vendor.o(($event) => $options.toggleCompletion(idx, "completed"), "completed-" + idx),
@@ -366,23 +460,23 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         h: "behavior-completed-" + idx
       });
     }),
-    p: $data.currentScrollId,
-    q: common_vendor.o($options.closeEditModal),
-    r: common_vendor.o($options.handleEditConfirm),
-    s: common_vendor.p({
+    t: $data.currentScrollId,
+    v: common_vendor.o($options.closeEditModal),
+    w: common_vendor.o($options.handleEditConfirm),
+    x: common_vendor.p({
       visible: $data.showEditModal,
       action: $data.currentAction
     }),
-    t: common_vendor.o($options.handleClosePopup),
-    v: common_vendor.p({
+    y: common_vendor.o($options.handleClosePopup),
+    z: common_vendor.p({
       visible: $data.showPopup,
       description: $data.description,
       type: "action"
     }),
-    w: common_vendor.o($options.closeGoalModal),
-    x: common_vendor.o($options.handleGoalConfirm),
-    y: common_vendor.o($options.handleGoalDelete),
-    z: common_vendor.p({
+    A: common_vendor.o($options.closeGoalModal),
+    B: common_vendor.o($options.handleGoalConfirm),
+    C: common_vendor.o($options.handleGoalDelete),
+    D: common_vendor.p({
       visible: $data.showGoalModalone,
       plan: $data.plan
     })
@@ -390,3 +484,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-82a82ead"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/exploringBehavior/exploringBehavior.js.map

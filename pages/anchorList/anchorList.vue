@@ -13,7 +13,7 @@
 			<view class="anchor-item" v-for="(item, index) in anchorList" :key="index" @tap="goToBehaviors(item)">
 				<view class="anchor-content">
 					<view class="anchor-name">{{ item.name }}</view>
-					<view class="anchor-time" v-if="item.hour !== null && item.minute !== null">
+					<view class="anchor-time" v-if="item.hour !== null && item.minute !== null && item.hour !== undefined && item.minute !== undefined">
 						提醒时间: {{ padZero(item.hour) }}:{{ padZero(item.minute) }}
 					</view>
 				</view>
@@ -58,90 +58,126 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				showModal: false,
-				timeRange: Array.from({
-					length: 24
-				}, (_, i) => i),
-				minuteRange: Array.from({
-					length: 60
-				}, (_, i) => i),
-				newAnchor: {
-					name: '',
-					hour: null, // 初始值设为 null
-					minute: null // 初始值设为 null
-				},
-				anchorList: [],
-				tempBehavior: {} // 接收传递过来的行为列表
-			}
-		},
-		onLoad(options) {
-			this.loadAnchorList();
-			if (options.anchor) {
-				this.tempBehavior = JSON.parse(options.anchor);
-				console.log('接收到的行为列表:', this.tempBehavior);
-			}
-		},
-		methods: {
-			loadAnchorList() {
-				const savedList = uni.getStorageSync('anchorList');
-				if (savedList) {
-					this.anchorList = savedList;
-				}
-			},
-			saveAnchorList() {
-				uni.setStorageSync('anchorList', this.anchorList);
-			},
-			toggleModal() {
-				this.showModal = !this.showModal
-				if (!this.showModal) {
-					this.newAnchor = {
-						name: '',
-						hour: null,
-						minute: null
-					}
-				}
-			},
-			goToBehaviors(anchor) {
-				uni.navigateTo({
-					url: `/pages/anchor-behaviorsList/anchor-behaviorsList?anchor=${JSON.stringify(anchor)}&tempBehavior=${JSON.stringify(this.tempBehavior)}`
-				})
-			},
-			padZero(num) {
-				return num.toString().padStart(2, '0')
-			},
-			onTimeChange(e) {
-				const [hour, minute] = e.detail.value
-				this.newAnchor.hour = parseInt(hour)
-				this.newAnchor.minute = parseInt(minute)
-			},
-			addAnchor() {
-				if (!this.newAnchor.name.trim()) {
-					uni.showToast({
-						title: '请输入锚点名称',
-						icon: 'none'
-					})
-					return
-				}
+import { getAnchorList } from '@/utils/api.js';
 
-				this.anchorList.push({
-					name: this.newAnchor.name,
-					hour: this.newAnchor.hour,
-					minute: this.newAnchor.minute
-				})
-
-				this.saveAnchorList();
-				this.toggleModal()
-
-				uni.showToast({
-					title: '添加成功',
-					icon: 'success'
-				})
+export default {
+	data() {
+		return {
+			showModal: false,
+			timeRange: Array.from({
+				length: 24
+			}, (_, i) => i),
+			minuteRange: Array.from({
+				length: 60
+			}, (_, i) => i),
+			newAnchor: {
+				name: '',
+				hour: null, // 初始值设为 null
+				minute: null // 初始值设为 null
 			},
+			anchorList: [],
+			tempBehavior: {}, // 接收传递过来的行为列表
+			email: '' // 添加 email 属性
 		}
+	},
+	async onLoad(options) {
+		// 获取存储的邮箱
+		this.email = uni.getStorageSync('userEmail') || '';
+		
+		if (this.email) {
+			try {
+				// 使用 getAnchorList 接口
+				const response = await getAnchorList(this.email);
+				console.log('获取到的锚点列表:', response.data);
+				if (response.data) {
+					this.anchorList = response.data.map(behavior => ({
+						name: behavior.name,
+						hour: behavior.time ? behavior.time.split(':')[0] : null,
+						minute: behavior.time ? behavior.time.split(':')[1] : null
+					}));
+
+					console.log('保存到本地的锚3------点列表:', this.anchorList);
+					// 保存到本地存储
+					// uni.setStorageSync('anchorList', this.anchorList);
+				}
+			} catch (error) {
+				console.error('获取行为数据失败:', error);
+				uni.showToast({
+					title: '获取数据失败',
+					icon: 'none'
+				});
+				// 如果请求失败，尝试加载本地数据
+				this.loadAnchorList();
+			}
+		} else {
+			// 如果没有邮箱，加载本地数据
+			this.loadAnchorList();
+		}
+
+		// 处理传入的 anchor 参数
+		if (options.anchor) {
+			this.tempBehavior = JSON.parse(options.anchor);
+			console.log('接收到的行为列表:', this.tempBehavior);
+		}
+	},
+	methods: {
+		loadAnchorList() {
+			const savedList = uni.getStorageSync('anchorList');
+			if (savedList) {
+				this.anchorList = savedList;
+			}
+		},
+		saveAnchorList() {
+			uni.setStorageSync('anchorList', this.anchorList);
+		},
+		toggleModal() {
+			this.showModal = !this.showModal
+			if (!this.showModal) {
+				this.newAnchor = {
+					name: '',
+					hour: null,
+					minute: null
+				}
+			}
+		},
+		goToBehaviors(anchor) {
+			uni.navigateTo({
+				url: `/pages/anchor-behaviorsList/anchor-behaviorsList?anchor=${JSON.stringify(anchor)}&tempBehavior=${JSON.stringify(this.tempBehavior)}`
+			})
+		},
+		padZero(num) {
+			return num.toString().padStart(2, '0')
+		},
+		onTimeChange(e) {
+			const [hour, minute] = e.detail.value
+			this.newAnchor.hour = parseInt(hour)
+			this.newAnchor.minute = parseInt(minute)
+		},
+		addAnchor() {
+			if (!this.newAnchor.name.trim()) {
+				uni.showToast({
+					title: '请输入锚点名称',
+					icon: 'none'
+				})
+				return
+			}
+
+			this.anchorList.push({
+				name: this.newAnchor.name,
+				hour: this.newAnchor.hour,
+				minute: this.newAnchor.minute
+			})
+
+			this.saveAnchorList();
+			this.toggleModal()
+
+			uni.showToast({
+				title: '添加成功',
+				icon: 'success'
+			})
+		},
 	}
+}
 </script>
 
 <style scoped>
@@ -177,7 +213,7 @@
 	.anchor-name {
 		font-size: 32rpx;
 		color: #333;
-		margin-bottom: 10rpx;
+		/* margin-bottom: 10rpx; */
 	}
 
 	.anchor-time {

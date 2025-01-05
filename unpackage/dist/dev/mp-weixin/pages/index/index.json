@@ -1,6 +1,8 @@
 {
   "navigationBarTitleText": "愿望",
   "usingComponents": {
-    "success-popup": "../../components/SuccessPopup"
+    "success-popup": "../../components/SuccessPopup",
+    "up-swipe-action-item": "../../uni_modules/uview-plus/components/u-swipe-action-item/u-swipe-action-item",
+    "up-swipe-action": "../../uni_modules/uview-plus/components/u-swipe-action/u-swipe-action"
   }
 }

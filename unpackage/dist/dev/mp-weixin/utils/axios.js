@@ -2,6 +2,9 @@
 const common_vendor = require("../common/vendor.js");
 const utils_axiosAdapter = require("./axiosAdapter.js");
 const utils_ui = require("./ui.js");
+const systemInfo = common_vendor.index.getSystemInfoSync();
+if (systemInfo.platform === "mp-weixin" || systemInfo.platform === "mp-alipay" || systemInfo.platform === "mp-baidu" || systemInfo.platform === "mp-qq" || systemInfo.platform === "mp-toutiao")
+  ;
 const instance = common_vendor.axios.create({
   baseURL: "https://tip.yjdweb.cn",
   // 替换为你的后端 API 基础路径
@@ -28,7 +31,7 @@ instance.interceptors.request.use(
 );
 instance.interceptors.response.use(
   (response) => {
-    console.log(response);
+    common_vendor.index.__f__("log", "at utils/axios.js:52", response);
     if (response.status !== 200) {
       utils_ui.showToast({
         title: response.data.message || "请求失败",
@@ -54,3 +57,4 @@ instance.interceptors.response.use(
   }
 );
 exports.instance = instance;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/utils/axios.js.map

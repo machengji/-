@@ -3,6 +3,9 @@
   "usingComponents": {
     "edit-action-modal": "../../components/EditActionModal",
     "success-popup": "../../components/SuccessPopup",
-    "goal-modal": "../../components/GoalModal"
+    "goal-modal": "../../components/GoalModal",
+    "up-icon": "../../uni_modules/uview-plus/components/u-icon/u-icon",
+    "up-swipe-action-item": "../../uni_modules/uview-plus/components/u-swipe-action-item/u-swipe-action-item",
+    "up-swipe-action": "../../uni_modules/uview-plus/components/u-swipe-action/u-swipe-action"
   }
 }

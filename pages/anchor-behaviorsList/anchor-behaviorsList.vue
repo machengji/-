@@ -395,7 +395,7 @@ export default {
 				/* 稍微增大字体 */
 				font-weight: 600;
 				/* 加粗字体 */
-				margin-bottom: 12rpx;
+				// margin-bottom: 12rpx;
 				color: #333;
 				/* 深色文字 */
 			}
@@ -471,7 +471,7 @@ export default {
 
 					.behavior-name {
 						font-size: 30rpx;
-						margin-bottom: 8rpx;
+						// margin-bottom: 8rpx;
 						color: #333;
 						/* 深色文字 */
 					}

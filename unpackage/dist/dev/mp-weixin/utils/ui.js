@@ -12,3 +12,4 @@ function showToast(options = { title: "操作成功", icon: "success", duration:
 }
 exports.hideLoading = hideLoading;
 exports.showToast = showToast;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/utils/ui.js.map

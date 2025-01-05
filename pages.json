@@ -1,4 +1,14 @@
 {
+
+	"easycom": {
+		"autoscan": true,
+		// 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+		"custom": {
+			"^u--(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
 	"pages": [{
 			"path": "pages/index/index",
 			"style": {
@@ -24,45 +34,39 @@
 			}
 		},
 		{
-			"path" : "pages/anchor-behaviors/anchor-behaviors",
-			"style" : 
-			{
-				"navigationBarTitleText" : "锚点行为列表"
+			"path": "pages/anchor-behaviors/anchor-behaviors",
+			"style": {
+				"navigationBarTitleText": "锚点行为列表"
 			}
 		},
 		{
-			"path" : "pages/anchorList/anchorList",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/anchorList/anchorList",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/anchor-behaviorsList/anchor-behaviorsList",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/anchor-behaviorsList/anchor-behaviorsList",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/book/book",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/book/book",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/about/about",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/dreamList/dreamList",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/dreamList/dreamList",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		}
 	],
@@ -90,20 +94,20 @@
 		"list": [{
 				"pagePath": "pages/index/index",
 				"text": "愿望",
-				"iconPath": "static/标签 (1).png",
-				"selectedIconPath": "static/标签.png"
+				"iconPath": "static/point1.png",
+				"selectedIconPath": "static/point.png"
 			},
 			{
 				"pagePath": "pages/createPlan/createPlan",
 				"text": "锚点",
-				"iconPath": "static/挂号 (1).png",
-				"selectedIconPath": "static/挂号.png"
+				"iconPath": "static/miaodian1.png",
+				"selectedIconPath": "static/miaodian.png"
 			},
 			{
 				"pagePath": "pages/anotherPage/anotherPage",
 				"text": "我的",
-				"iconPath": "static/我的 (1).png",
-				"selectedIconPath": "static/我的.png"
+				"iconPath": "static/own1.png",
+				"selectedIconPath": "static/own.png"
 			}
 		]
 	}

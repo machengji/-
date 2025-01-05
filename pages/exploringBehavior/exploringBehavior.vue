@@ -11,8 +11,10 @@
 			<view class="card-header">
 				<text class="section-title bold-title">AI探索行为标签</text>
 				<view class="header-buttons">
-					<button class="clear-tags-btn" @tap="clearAiTags">清空</button>
-					<button class="reexplore-btn" @tap="reExplore">探索</button>
+					<button class="clear-tags-btn" @tap="clearAiTags">
+							<up-icon name="reload" color="#ffffff"></up-icon>
+						</button>
+					<button class="reexplore-btn" @tap="reExplore"><up-icon name="search" color="#ffffff"></up-icon></button>
 				</view>
 			</view>
 
@@ -24,8 +26,8 @@
 				</view>
 				<scroll-view v-else scroll-y class="tag-scroll">
 					<view class="tags-container">
-						<view v-for="(item, index) in aiTags" :key="'aiTag-' + index" class="tag-item" :class="{ active: activeTagIndex === index }"
-							@tap="onTagClick(item, index)">
+						<view v-for="(item, index) in aiTags" :key="'aiTag-' + index" class="tag-item"
+							:class="{ active: activeTagIndex === index }" @tap="onTagClick(item, index)">
 							{{ item }}
 						</view>
 					</view>
@@ -37,40 +39,51 @@
 		<!-- 选择的行为区域头部 -->
 		<view class="card behavior-header">
 			<text class="section-title bold-title">选择的行为</text>
-			<button class="add-action-btn" @tap="showInput = true">添加行为</button>
+			<view v-if="!showInput">
+				<button class="add-action-btn" @tap="showInput = true">
+					<up-icon name="plus" color="#ffffff" class="icon"></up-icon>
+				</button>
+			</view>
+			<view v-else>
+				<input v-model="newAction" placeholder="请输入新行为" class="action-input" @confirm="addAction" @blur="showInput = false" />
+			</view>
 		</view>
 
-		<!-- 输入框 -->
+		<!-- 输入框
 		<view v-if="showInput" class="input-container">
 			<input v-model="newAction" placeholder="请输入新行为" class="action-input" />
 			<view class="button-group">
 				<button class="confirm-btn" @tap="addAction">确认</button>
 				<button class="cancel-btn" @tap="showInput = false">取消</button>
 			</view>
-		</view>
+		</view> -->
 
 		<!-- 选择的行为区域 -->
 		<scroll-view scroll-y class="behavior-section" :scroll-into-view="currentScrollId" :scroll-with-animation="true"
 			:show-scrollbar="false" :enhanced="true">
 			<view v-for="(action, idx) in chosenBehaviors" :key="'chosen-' + idx" :id="'behavior-chosen-' + idx"
 				class="behavior-card">
-				<view class="checkbox" @tap="toggleCompletion(idx, 'chosen')">
-					<text class="checkbox-icon">
-						{{ action.completed ? '✔️' : '⬜️' }}
-					</text>
-				</view>
-				<view class="behavior-content">
-					<view class="behavior-title">
-						{{ idx + 1 }}. {{ action.title }}
-					</view>
-
-					<view class="behavior-options">
-						<button class="behavior-btn primary" @tap="continueExplore(action)">细化探索</button>
-						<button class="behavior-btn secondary" @tap="scrollToBehavior(action)">去绑定锚点</button>
-						<button class="behavior-btn secondary" @tap="editAction(action, idx)">编辑</button>
-						<button class="behavior-btn danger" @tap="deleteAction(idx)">删除</button>
-					</view>
-				</view>
+				<up-swipe-action>
+					<up-swipe-action-item :options="[ 
+						{ icon: 'search', style: { background: 'linear-gradient(135deg, #e64a19, #ff9800)', width: '70rpx', height: '70rpx', borderRadius: '35rpx', marginRight: '10rpx' } }, // 细化探索
+						{ icon: 'plus', style: { background: 'linear-gradient(135deg, #ff3d00, #ffb300)', width: '70rpx', height: '70rpx', borderRadius: '35rpx', marginRight: '10rpx' } }, // 去绑定锚点
+						{ icon: 'edit-pen-fill', style: { background: 'linear-gradient(135deg, #ff8e22, #ffcc00)', width: '70rpx', height: '70rpx', borderRadius: '35rpx', marginRight: '10rpx' } }, // 编辑
+						{ icon: 'trash', style: { background: 'linear-gradient(135deg, #ff3d00, #ff0000)', width: '70rpx', height: '70rpx', borderRadius: '35rpx' } }  // 删除
+					]" :threshold="80" @click="handleSwipeOptionClick(action, idx, $event)">
+						<view class="behavior-item">
+							<view class="checkbox" @tap="toggleCompletion(idx, 'chosen')">
+								<text class="checkbox-icon">
+									{{ action.completed ? '✔️' : '⬜️' }}
+								</text>
+							</view>
+							<view class="behavior-content">
+								<view class="behavior-title">
+									{{ idx + 1 }}. {{ action.title }}
+								</view>
+							</view>
+						</view>
+					</up-swipe-action-item>
+				</up-swipe-action>
 			</view>
 
 			<!-- 已完成的行为列表 -->
@@ -94,18 +107,20 @@
 		</scroll-view>
 		<edit-action-modal :visible="showEditModal" :action="currentAction" @close="closeEditModal"
 			@confirm="handleEditConfirm"></edit-action-modal>
-		<success-popup :visible="showPopup"   :description="description"
-      type="action" @close="handleClosePopup"></success-popup>
-		<GoalModal :visible="showGoalModalone" :plan="plan" @close="closeGoalModal" @confirm="handleGoalConfirm" @delete="handleGoalDelete"></GoalModal>
+		<success-popup :visible="showPopup" :description="description" type="action"
+			@close="handleClosePopup"></success-popup>
+		<GoalModal :visible="showGoalModalone" :plan="plan" @close="closeGoalModal" @confirm="handleGoalConfirm"
+			@delete="handleGoalDelete"></GoalModal>
 	</view>
 </template>
 <script>
 	import {
-		getPlan
+		getPlan,
+		saveUserPlan
 	} from '@/utils/api.js';
 	import EditActionModal from '@/components/EditActionModal.vue';
-	import SuccessPopup from '@/components/SuccessPopup.vue'; // 引入模态框组件
-	import GoalModal from '@/components/GoalModal.vue'; // 引入目标编辑模态框
+	import SuccessPopup from '@/components/SuccessPopup.vue';
+	import GoalModal from '@/components/GoalModal.vue';
 
 	function deepClone(obj) {
 		if (typeof obj !== 'object' || obj === null) {
@@ -140,36 +155,45 @@
 				newAction: "",
 				loading: false,
 				showPopup: false,
-				showEditModal: false, // 控制模态框显示
+				showEditModal: false,
 				currentAction: {},
-				 description:'',// 当前编辑的 action
-				currentEditIndex: -1, // 当前编辑的 action 的索引
-				showGoalModalone: false, // 控制目标编辑模态框显示
-				isFetching: false, // 添加一个标志位，表示是否正在请求
+				description: '',
+				currentEditIndex: -1,
+				showGoalModalone: false,
+				isFetching: false,
+				email: '', // 用户邮箱
 			}
 		},
 
 		onLoad(options) {
 			if (options.plan) {
-				this.plan = JSON.parse(options.plan);
-				// 检查是否已经初次探索
-				if (this.plan.isExplored) {
+				try {
+					const parsedPlan = JSON.parse(options.plan);
+					this.plan = deepClone(parsedPlan); 
+					console.log("plan56565",this.plan)
+					// 使用深拷贝
 					this.loadBehaviorsFromStorage();
-					return; // 如果已经探索过，则不执行后续的请求
+					if (this.plan.isExplored) {
+						
+						return;
+					}
+				} catch (error) {
+					console.error("解析 plan 数据失败:", error);
+					// 可以添加错误处理逻辑，例如显示错误提示
 				}
 			}
 		},
 
+
 		mounted() {
+			this.email = uni.getStorageSync('userEmail') || ''; // 获取用户邮箱
 			console.log(this.plan.isExplored)
-			// 检查是否已经初次探索
 			if (!this.plan.isExplored) {
 				this.fetchPlanData();
 			}
 		},
 		methods: {
 			async fetchPlanData(message) {
-				// 如果正在请求，则直接返回，避免重复请求
 				if (this.isFetching) {
 					uni.showToast({
 						title: "请等待上一个AI回答完成",
@@ -178,17 +202,15 @@
 					});
 					return;
 				}
-				this.isFetching = true; // 设置正在请求的标志
+				this.isFetching = true;
 				this.loading = true;
 				try {
 					const response = await getPlan({
-						message: message || this.plan.name // 如果没有传递 message，则使用 plan.name
+						message: message || this.plan.name
 					});
 					console.log(response);
 					if (response.response && Array.isArray(response.response)) {
 						this.aiTags = response.response.map(item => item.text);
-
-						// 设置 isExplored 为 true 并更新本地缓存
 						if (!message) {
 							this.plan.isExplored = true;
 							this.plan.status = "进行中"
@@ -210,43 +232,43 @@
 					});
 				} finally {
 					this.loading = false;
-					this.isFetching = false; // 请求完成后，重置标志
+					this.isFetching = false;
 				}
 			},
 			handleClosePopup() {
 				this.showPopup = false;
 			},
-			goshowGoalModal(){
-				
-				this.showGoalModalone=true
+			goshowGoalModal() {
+
+				this.showGoalModalone = true
 				// console.log("88888")
 			},
-			
+
 			onTagClick(tag, index) {
 				this.activeTagIndex = index;
-				      setTimeout(() => {
-				        this.activeTagIndex = -1;
-				        this.aiTags.splice(index, 1);
-				        this.chosenBehaviors.unshift({
-				          title: tag,
-				          completed: false,
-				        });
-				        this.currentScrollId = `behavior-chosen-0`;
-				        this.updatePlanInStorage();
-				      }, 200);
+				setTimeout(() => {
+					this.activeTagIndex = -1;
+					this.aiTags.splice(index, 1);
+					this.chosenBehaviors.unshift({
+						title: tag,
+						completed: false,
+					});
+					this.currentScrollId = `behavior-chosen-0`;
+					this.updatePlanInStorage();
+				}, 200);
 			},
 			clearAiTags() {
 				this.aiTags = [];
 			},
 			continueExplore(action) {
-				
-				 this.fetchPlanData(`${String(action.title)}`);
+
+				this.fetchPlanData(`${String(action.title)}`);
 			},
 
 			editAction(action, idx) {
 				this.currentAction = {
 					...action
-				}; // 复制 action 对象
+				};
 				this.currentEditIndex = idx;
 				this.showEditModal = true;
 			},
@@ -269,7 +291,6 @@
 				this.closeEditModal();
 			},
 
-			// 跳转到某个行为
 			scrollToBehavior(action) {
 				const targetId = `behavior-chosen-${this.chosenBehaviors.indexOf(action)}`;
 				this.currentScrollId = targetId;
@@ -291,24 +312,21 @@
 			},
 
 			addAction() {
+				console.log("newAction",this.newAction)
 				if (this.newAction.trim() === "") {
-					// uni.showToast({
-					// 	title: "请输入有效的行为",
-					// 	icon: "none",
-					// 	duration: 2000
-					// });
 					return;
 				}
+				
 				this.chosenBehaviors.unshift({
 					title: this.newAction,
 					completed: false
 				});
 				this.currentScrollId = `behavior-chosen-0`;
-				uni.showToast({
-					title: "已添加行为：" + this.newAction,
-					icon: "none",
-					duration: 2000
-				});
+				// uni.showToast({
+				// 	title: "已添加行为：" + this.newAction,
+				// 	icon: "none",
+				// 	duration: 2000
+				// });
 				this.newAction = "";
 				this.showInput = false;
 				this.updatePlanInStorage();
@@ -326,7 +344,6 @@
 							(item) => item.title === action.title
 						);
 						if (completedIndex === -1) {
-							// 已完成列表不存在相同行为，移动到已完成列表并设置完成次数为 1, completed = true
 							const newCompletedAction = {
 								...action,
 								completedCount: 1,
@@ -334,18 +351,16 @@
 							};
 							this.completedBehaviors.unshift(newCompletedAction);
 						} else {
-							// 已完成列表存在相同行为，完成次数加 1
 							this.completedBehaviors[completedIndex].completedCount++;
 						}
 					} else {
-						// 非重复行为，移动到已完成列表
 						const [completedAction] = this.chosenBehaviors.splice(idx, 1);
 						completedAction.completed = true;
 						this.completedBehaviors.unshift(completedAction);
 					}
-					 this.description = action.title; // Set the description here
+					this.description = action.title;
 					this.showPopup = true;
-					
+
 				} else if (listType === 'completed') {
 					const action = this.completedBehaviors[idx];
 					if (action.repeat) {
@@ -353,11 +368,9 @@
 							(item) => item.title === action.title
 						);
 						if (chosenIndex === -1) {
-							// 未完成列表不存在相同行为，移动到未完成列表
 							this.chosenBehaviors.unshift(action);
 							this.completedBehaviors.splice(idx, 1);
 						} else {
-							// 未完成列表存在相同行为，提示用户
 							uni.showToast({
 								title: "该行为已在未完成列表中",
 								icon: "none",
@@ -365,7 +378,6 @@
 							});
 						}
 					} else {
-						// 非重复行为，移动到未完成列表
 						const [chosenAction] = this.completedBehaviors.splice(idx, 1);
 						chosenAction.completed = false;
 						this.chosenBehaviors.unshift(chosenAction);
@@ -385,6 +397,7 @@
 				if (plans) {
 					plans = JSON.parse(plans);
 					const currentPlan = plans.find(p => p.id === this.plan.id);
+					console.log("kkkkplan",currentPlan)
 					if (currentPlan && currentPlan.chosenBehaviors) {
 						this.chosenBehaviors = currentPlan.chosenBehaviors;
 					}
@@ -393,7 +406,7 @@
 					}
 				}
 			},
-			updatePlanInStorage() {
+			async updatePlanInStorage() {
 				let plans = uni.getStorageSync('plans');
 				if (plans) {
 					plans = JSON.parse(plans);
@@ -407,22 +420,33 @@
 						uni.setStorageSync('plans', JSON.stringify(plans));
 					}
 				}
+				if (this.email) {
+					// 先从本地存储获取 plans
+					let storedPlans = uni.getStorageSync('plans');
+					let plansToSave = [];
+					if (storedPlans) {
+						plansToSave = JSON.parse(storedPlans);
+					} else {
+						plansToSave = this.plans;
+					}
+					await saveUserPlan(this.email, plansToSave);
+					console.log('计划数据保存到后端成功');
+				}
 			},
-			// 显示目标编辑模态框
 			showGoalModal() {
 				this.showGoalModal = true;
 			},
-			// 关闭目标编辑模态框
 			closeGoalModal() {
 				this.showGoalModalone = false;
 			},
-			// 处理目标编辑模态框的确认
 			handleGoalConfirm(updatedPlan) {
-				this.plan = { ...this.plan, ...updatedPlan };
+				this.plan = {
+					...this.plan,
+					...updatedPlan
+				};
 				this.updatePlanInStorage();
 				this.closeGoalModal();
 			},
-			// 处理目标删除
 			handleGoalDelete() {
 				let plans = uni.getStorageSync('plans');
 				if (plans) {
@@ -434,7 +458,27 @@
 						uni.navigateBack();
 					}
 				}
-			}
+			},
+			handleSwipeOptionClick(action, idx, event) {
+				console.log('Swipe action button clicked for action:', action);
+				if (event.index === 0) {
+					// 细化探索按钮被点击
+					console.log('细化探索按钮被点击, ID:', action.id);
+					this.continueExplore(action);
+				} else if (event.index === 1) {
+					// 去绑定锚点按钮被点击
+					console.log('去绑定锚点按钮被点击, ID:', action.id);
+					this.scrollToBehavior(action);
+				} else if (event.index === 2) {
+					// 编辑按钮被点击
+					console.log('编辑按钮被点击, ID:', action.id);
+					this.editAction(action, idx);
+				} else if (event.index === 3) {
+					// 删除按钮被点击
+					console.log('删除按钮被点击, ID:', action.id);
+					this.deleteAction(idx);
+				}
+			},
 		}
 	}
 </script>
@@ -444,14 +488,17 @@
 	.container {
 		display: flex;
 		flex-direction: column;
-		background-color: #f0f2f5;
+		// background-color: #f0f2f5;
 		max-height: 100vh;
 		overflow: hidden;
 		position: relative;
 		padding: 10rpx;
 		box-sizing: border-box;
 	}
-
+	.up-swipe-action-item {
+		overflow: hidden;
+		width: 100%; /* Add this line *//* Add this to hide the swipe options by default */
+	}
 	.card,
 	.goal-card {
 		background: #fff;
@@ -464,9 +511,9 @@
 	.goal-card {
 		text-align: center;
 		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.goal-text {
@@ -481,33 +528,40 @@
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
+
 	uni-button:after {
 		border: none;
 	}
-  button::after{ border: none;} 
 
-.edit-goal-btn {
-    border: none;
-    background: transparent;
-    font-size: 40rpx;
-    color: #999;
-    padding: 0;
-    margin: 0;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-	padding-bottom: 20rpx; /* 尝试调整 padding-top */
-    &:active {
-        transform: scale(0.9);
-    }
-    // &::before {
-    //     content: "...";
-        
-    // }
-}
+	button::after {
+		border: none;
+	}
+
+	.edit-goal-btn {
+		border: none;
+		background: transparent;
+		font-size: 40rpx;
+		color: #999;
+		padding: 0;
+		margin: 0;
+		line-height: 1;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+		padding-bottom: 20rpx;
+
+		/* 尝试调整 padding-top */
+		&:active {
+			transform: scale(0.9);
+		}
+
+		// &::before {
+		//     content: "...";
+
+		// }
+	}
 
 
 
@@ -605,10 +659,10 @@
 	}
 
 	.clear-tags-btn {
-		background: #ff4d4f;
+		background: linear-gradient(135deg, #ff5722, #ff9800); /* 设置渐变的橙色背景 */
 
 		&:active {
-			background: #d9363e;
+			background: linear-gradient(135deg, #ff5722, #ff9800); /* 设置渐变的橙色背景 */
 			transform: scale(0.98);
 		}
 	}
@@ -677,7 +731,7 @@
 	.behavior-section {
 		flex: 1;
 		background: #fff;
-		padding: 20rpx;
+		// padding: 20rpx;
 		overflow-y: auto;
 		border-radius: 15rpx;
 		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
@@ -688,7 +742,7 @@
 		display: flex;
 		align-items: flex-start;
 		margin-bottom: 15rpx;
-		padding: 15rpx;
+		// padding: 15rpx;
 		border-radius: 10rpx;
 		background: #fff;
 		box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
@@ -713,13 +767,11 @@
 		color: #52c41a;
 	}
 
-	.behavior-content {
-		flex: 1;
-	}
+	
 
 	.behavior-title {
 		font-size: 30rpx;
-		margin-bottom: 10rpx;
+		// margin-bottom: 10rpx;
 		font-weight: bold;
 		color: #333;
 		word-break: break-word;
@@ -810,14 +862,21 @@
 		height: 50rpx;
 		line-height: 1;
 		color: #fff;
-		background: #1890ff;
+		background: linear-gradient(135deg, #ff5722, #ff9800);
 
 		&:active {
-			background: #096dd9;
-			transform: scale(0.98);
+			background: linear-gradient(135deg, #e64a19, #ff9800);
+			transform: scale(0.95);
 		}
 	}
 
+	.icon {
+		transition: transform 0.2s;
+	}
+
+	.add-action-btn:active .icon {
+		transform: scale(1.2);
+	}
 
 	.completed-header .section-title {
 		color: #555;
@@ -840,5 +899,21 @@
 	.loading-text {
 		font-size: 28rpx;
 		color: #888;
+	}
+
+	.behavior-item {
+		display: flex;
+		align-items: center;
+		padding: 15rpx; /* 垂直居中 */
+		width: 90vw;
+		min-height: 70rpx;
+	}
+
+	.checkbox {
+		margin-right: 10px; /* 右边距 */
+	}
+
+	.behavior-content {
+		flex: 1; /* 使内容占满剩余宽度 */
 	}
 </style>

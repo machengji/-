@@ -26,20 +26,20 @@
       {
         "pagePath": "pages/index/index",
         "text": "愿望",
-        "iconPath": "static/标签 (1).png",
-        "selectedIconPath": "static/标签.png"
+        "iconPath": "static/point1.png",
+        "selectedIconPath": "static/point.png"
       },
       {
         "pagePath": "pages/createPlan/createPlan",
         "text": "锚点",
-        "iconPath": "static/挂号 (1).png",
-        "selectedIconPath": "static/挂号.png"
+        "iconPath": "static/miaodian1.png",
+        "selectedIconPath": "static/miaodian.png"
       },
       {
         "pagePath": "pages/anotherPage/anotherPage",
         "text": "我的",
-        "iconPath": "static/我的 (1).png",
-        "selectedIconPath": "static/我的.png"
+        "iconPath": "static/own1.png",
+        "selectedIconPath": "static/own.png"
       }
     ]
   },

@@ -27,7 +27,7 @@ const _sfc_main = {
       immediate: true
     },
     visible(newValue, oldValue) {
-      console.log("GoalModal visible changed:", oldValue, "=>", newValue);
+      common_vendor.index.__f__("log", "at components/GoalModal.vue:57", "GoalModal visible changed:", oldValue, "=>", newValue);
     }
   },
   methods: {
@@ -66,3 +66,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ed2b2257"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../.sourcemap/mp-weixin/components/GoalModal.js.map

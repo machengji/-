@@ -7,15 +7,25 @@
 .anchor-list.data-v-ad7c18a5 {
 		padding-bottom: 120rpx;
 }
+.my-swipe-action.data-v-ad7c18a5 {
+			overflow: hidden;
+			margin-bottom: 20rpx; /* This is the correct place */
+}
+.up-swipe-action-item.data-v-ad7c18a5 {
+		overflow: hidden;
+		  margin-bottom: 20rpx; /* Add this line *//* Add this to hide the swipe options by default */
+}
 .anchor-item.data-v-ad7c18a5 {
 		display: flex;
 		align-items: center;
-		margin-bottom: 20rpx;
 		padding: 30rpx;
 		background: #ffffff;
 		border-radius: 12rpx;
 		box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
 		transition: all 0.3s ease;
+		/* 	margin-bottom: 20rpx; */
+		position: relative; /* Ensure proper stacking context for swipe actions */
+		z-index: 1; /* Ensure the content is above the swipe actions */
 }
 .anchor-item.data-v-ad7c18a5:active {
 		transform: scale(0.98);
@@ -26,16 +36,11 @@
 .anchor-name.data-v-ad7c18a5 {
 		font-size: 32rpx;
 		color: #333;
-		margin-bottom: 10rpx;
+		/* margin-bottom: 10rpx; */
 }
 .anchor-time.data-v-ad7c18a5 {
 		font-size: 26rpx;
 		color: #666;
-}
-.delete-btn.data-v-ad7c18a5 {
-		padding: 10rpx 20rpx;
-		color: #ff4d4f;
-		font-size: 28rpx;
 }
 .add-btn.data-v-ad7c18a5 {
 		position: fixed;
@@ -68,40 +73,17 @@
 		margin-left: -2rpx;
 		/* 微调加号水平位置 */
 }
-.modal-mask.data-v-ad7c18a5 {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.6);
-		z-index: 999;
-}
-.modal-container.data-v-ad7c18a5 {
-		position: fixed;
-		left: 50%;
-		bottom: -100%;
-		transform: translateX(-50%);
-		width: 90%;
-		background: #fff;
-		border-radius: 24rpx 24rpx 0 0;
-		z-index: 1000;
-		transition: all 0.3s;
-}
-.modal-active.data-v-ad7c18a5 {
-		bottom: 0;
-}
 .modal-content.data-v-ad7c18a5 {
-		padding: 40rpx;
+		padding: 20rpx;
 }
 .modal-title.data-v-ad7c18a5 {
-		font-size: 36rpx;
+		font-size: 24rpx;
 		font-weight: 500;
 		text-align: center;
-		margin-bottom: 40rpx;
+		margin-bottom: 10rpx;
 }
 .input-group.data-v-ad7c18a5 {
-		margin-bottom: 20rpx;
+		margin-bottom: 15rpx;
 }
 .input.data-v-ad7c18a5 {
 		/* width: 100%; */
@@ -123,8 +105,8 @@
 		color: #333;
 }
 .modal-tips.data-v-ad7c18a5 {
-		font-size: 24rpx;
-		color: #999;
+		font-size: 12rpx;
+		color: #888;
 		margin-bottom: 20rpx;
 		text-align: center;
 }
@@ -167,4 +149,8 @@
 		color: #ccc;
 		text-align: center;
 		line-height: 1.5;
+}
+.todays-anchor .anchor-name.data-v-ad7c18a5 {
+		font-weight: bold;
+		color: #ff5722;
 }

@@ -31,3 +31,4 @@ const wxAdapter = (config) => {
   });
 };
 exports.wxAdapter = wxAdapter;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/utils/axiosAdapter.js.map

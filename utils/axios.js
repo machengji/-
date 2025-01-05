@@ -2,6 +2,21 @@
 import axios from 'axios';
 import wxAdapter from './axiosAdapter';
 import { showLoading, hideLoading, showToast } from '@/utils/ui'; // 假设你有一个 UI 工具文件
+// 获取系统信息
+const systemInfo = uni.getSystemInfoSync();
+let adapter;
+
+
+// 根据运行环境选择适配器
+if (systemInfo.platform === 'mp-weixin' || systemInfo.platform === 'mp-alipay' || systemInfo.platform === 'mp-baidu' || systemInfo.platform === 'mp-qq' || systemInfo.platform === 'mp-toutiao') {
+    // 小程序环境
+    adapter = wxAdapter;
+} else {
+    // 浏览器或安卓 WebView 环境，使用默认适配器
+    adapter = adapter;
+}
+
+
 
 // 创建 axios 实例
 const instance = axios.create({
